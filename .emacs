@@ -6,7 +6,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(paredit parinfer-rust multiple-cursors cmake-mode which-key use-package spacemacs-theme solo-jazz-theme solarized-theme rainbow-delimiters projectile parinfer-rust-mode one-themes modus-themes ivy-rich helpful doom-themes doom-modeline counsel)))
+   '(auto-complete pdf-continuous-scroll-mode pdf-tools paredit parinfer-rust multiple-cursors cmake-mode which-key use-package spacemacs-theme solo-jazz-theme solarized-theme rainbow-delimiters projectile parinfer-rust-mode one-themes modus-themes ivy-rich helpful doom-themes doom-modeline counsel)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -28,11 +28,22 @@
 (set-fringe-mode 10)                ; Give some breathing room
 (switch-to-buffer "new-file" nil t) ; The initial buffer should be an empty buffer
 (setq indent-tabs-mode nil)
+(put 'upcase-region 'disabled nil)
+(delete-selection-mode 1)
 
 
 ;; ------ Mouse wheel ------
 (setq mouse-wheel-scroll-amount '(2 ((shift) . 4) ((control) . nil)))
 (setq mouse-wheel-progressive-speed nil)
+
+
+;; ------ Melpa ------
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+;; Comment/uncomment this line to enable MELPA Stable if desired.  See `package-archive-priorities`
+;; and `package-pinned-packages`. Most users will not need or want to do this.
+(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+(package-initialize)
 
 
 ;; ------ Use package variable ------
@@ -73,6 +84,15 @@
 (add-hook 'lisp-mode-hook             #'electric-pair-mode)
 (add-hook 'lisp-interaction-mode-hook #'electric-pair-mode)
 (add-hook 'scheme-mode-hook           #'electric-pair-mode)
+
+
+;; ------- Show paren -------
+(add-hook 'emacs-lisp-mode-hook       #'show-paren-mode)
+(add-hook 'eval-expression-minibuffer-setup-hook #'show-paren-mode)
+(add-hook 'ielm-mode-hook             #'show-paren-mode)
+(add-hook 'lisp-mode-hook             #'show-paren-mode)
+(add-hook 'lisp-interaction-mode-hook #'show-paren-mode)
+(add-hook 'scheme-mode-hook           #'show-paren-mode)
 
 
 ;; ------- Line numbers -------
@@ -151,7 +171,10 @@
 
 ;; ------- Multiple cursors -------
 (require 'multiple-cursors)
-(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
-(global-set-key (kbd "C->") 'mc/mark-next-line-like-this)
-(global-set-key (kbd "C-<") 'mc/mark-previous-line-like-this)
-(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+(global-set-key (kbd "C-S-c") 'mc/edit-lines)
+(define-key mc/keymap (kbd "<return>") nil)
+(global-set-key (kbd "C-S-<mouse-1>") 'mc/add-cursor-on-click)
+
+
+;; ----- Auto complete -----
+(ac-config-default)
